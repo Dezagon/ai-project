@@ -1,0 +1,8 @@
+alembic
+fastapi
+psycopg2
+pydantic
+python-decouple
+python-multipart
+sqlmodel
+uvicorn
