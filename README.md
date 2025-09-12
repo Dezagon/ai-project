@@ -1,6 +1,6 @@
-# AI Study Helper
+# AI Tool (replace with the name of your app)
 
-This is an app to help you with your studies! It uses AI locally to build flashcards and test your knowledge.
+This is a starter project and that you should update this README to reflect any additional instructions or description needed. For example, you will be using the [Ollama python library](https://github.com/ollama/ollama-python). What additional setup does a user of your app need to go through to get started?
 
 ## Getting started
 
@@ -20,16 +20,10 @@ pip install -r requirements
 Create the database:
 
 ```bash
-createdb ai-study-helper
+createdb <name-of-db>
 ```
 
-Rename `.env.example` to `.env` and adjust the `DATABASE_URL` (if needed).
-
-Run the database migrations:
-
-```bash
-alembic upgrade head
-```
+Rename `.env.example` to `.env` and adjust/fill in the variables.
 
 For running the app, I recommend you use vscode. The `launch.json` is configured already, so you should be able to just start the debugger.
 

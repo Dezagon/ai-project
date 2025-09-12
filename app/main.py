@@ -1,10 +1,8 @@
-from fastapi import Depends, FastAPI
+from fastapi import FastAPI
 
-from app.database import get_db
-from app.routers import ai, auth, notes
+from app.routers import ai, auth
 
-app = FastAPI(title="AI Study Helper")
+app = FastAPI(title="<Replace this with your title>")
 
-app.include_router(ai.router)
-app.include_router(auth.router)
-app.include_router(notes.router)
+app.include_router(auth.router, prefix="/auth", tags=["auth"])
+app.include_router(ai.router, prefix="/ai", tags=["ai"])
