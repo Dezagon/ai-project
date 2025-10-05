@@ -6,10 +6,5 @@ pydantic
 pyjwt
 python-decouple
 python-multipart
-python-dotenv
 sqlmodel
 uvicorn
-supabase
-uv
-fastapi-mcp
-ollama
