@@ -1,4 +1,4 @@
-# AI Tool (replace with the name of your app)
+# Trackagon
 
 This is a starter project and that you should update this README to reflect any additional instructions or description needed. For example, you will be using the [Ollama python library](https://github.com/ollama/ollama-python). What additional setup does a user of your app need to go through to get started?
 
