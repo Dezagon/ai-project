@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import date, timedelta, timezone
 from typing import Annotated
 from dotenv import load_dotenv
 # Supabass Auth
@@ -14,8 +14,8 @@ from jwt.exceptions import InvalidTokenError
 from passlib.context import CryptContext
 
 from app.database import get_db
-from app.models import User
-from app.schemas import CreateUserRequest, UpdateUserRequest, Token, TokenData
+from app.models import User, JournalEntry
+from app.schemas import CreateUserRequest, UpdateUserRequest, UpdateUserFoodJournalRequest, JournalEntryRequest, Token, TokenData
 from app.utils.security import authenticate_user, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
 
 
@@ -139,7 +139,7 @@ async def delete_user_by_email(user_email: str, current_logged_in_user = Depends
 async def get_users(current_user: Annotated[User, Depends(get_current_user)], db: Session = Depends(get_db)) -> list[User]: return db.exec(select(User)).all()
 
 # PATCH methods
-@router.patch("/users/{user_email}", status_code=status.HTTP_204_NO_CONTENT)
+@router.patch("/update_user/{user_email}", status_code=status.HTTP_204_NO_CONTENT)
 async def update_user(current_user: Annotated[User, Depends(get_current_user)], user_email: str, update_user_request: UpdateUserRequest ,db: Session = Depends(get_db)) -> None:
     # Updated both database data and supabase auth data
     user: User | None = db.get(User, user_email)
@@ -150,17 +150,32 @@ async def update_user(current_user: Annotated[User, Depends(get_current_user)], 
     for k, v in update_user_request.model_dump(exclude_unset=True).items():
         setattr(user, k, v)
     
-    supa_response = supabase.auth.update_user(
-        {
-            "email": update_user_request.email,
-            "data": {
-                "username": update_user_request.username,
-                "first_name": update_user_request.first_name,
-                "last_name": update_user_request.last_name,
-            }
-        }
-    )
+    # supa_response = supabase.auth.update_user(
+    #     {
+    #         "email": update_user_request.email,
+    #         "data": {
+    #             "username": update_user_request.username,
+    #             "first_name": update_user_request.first_name,
+    #             "last_name": update_user_request.last_name,
+    #         }
+    #     }
+    # )
     db.commit()
+
+@router.patch("/update_food_journal/{user_email}", status_code=status.HTTP_204_NO_CONTENT)
+async def update_user_food_journal(current_user: Annotated[User, Depends(get_current_user)], user_email: str, journal_entry_request: JournalEntryRequest, db: Session = Depends(get_db)) -> None:
+    user: User | None = db.get(User, user_email)
+    
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with email {user_email}")
+
+    journal_entry: JournalEntry = JournalEntry(**journal_entry_request.model_dump())
+    user.food_journal.append(journal_entry)
+    
+    db.commit()
+    db.refresh(user)
+
+
 
 # DELETE Methods
 @router.delete("/users/{user_email}", status_code=status.HTTP_204_NO_CONTENT)
@@ -181,18 +196,3 @@ async def delete_user(current_user: Annotated[User, Depends(get_current_user)], 
 
 
 
-# {
-#   "email": "bigodow732@rograc.com",
-#   "username": "DianaOfThemyscira",
-#   "first_name": "Diana",
-#   "last_name": "Of Themyscira",
-#   "password": "ByAphrodite"
-# }
-
-# {
-#   "email": "varivic660@protonza.com",
-#   "username": "Aquaman",
-#   "first_name": "Arthur",
-#   "last_name": "Curry",
-#   "password": "SeaCreaturesRule"
-# }

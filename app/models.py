@@ -1,5 +1,6 @@
 from sqlmodel import Field, SQLModel
 from sqlalchemy import Column, JSON
+from datetime import date, datetime, timedelta
 
 class User(SQLModel, table=True):
     email: str = Field(primary_key=True)
@@ -12,11 +13,11 @@ class User(SQLModel, table=True):
     protein_goal: int = 0
     carb_goal: int = 0
     fat_goal: int = 0
-    food_journal: list["FoodJournal"] = Field(sa_column=Column(JSON))
+    food_journal: list["JournalEntry"] = Field(sa_column=Column(JSON))
     
-class FoodJournal(SQLModel):
-    date: str
-    journal: list["JournalEntry"] = Field(sa_column=Column(JSON))
+# class FoodJournal(SQLModel):
+#     date: date
+#     journal: list["JournalEntry"] = Field(sa_column=Column(JSON))
 
 class JournalEntry(SQLModel):
     name: str
